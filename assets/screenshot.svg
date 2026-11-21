@@ -75,10 +75,10 @@
 
   <!-- projection strip: Plan teaser -->
   <rect x="320" y="422" width="862" height="86" rx="10" fill="#231d10" stroke="#3f3320"/>
-  <text x="338" y="452" font-size="12.5"><tspan fill="#d7a94b">◎  Projection, not a book.</tspan><tspan fill="#a89468">  Plan answers “what if this put is assigned?” — shares and calls that do not</tspan></text>
-  <text x="356" y="472" font-size="12.5" fill="#a89468">exist yet. Amber panes are hypothetical; steel panes are real. Recording an assignment from here needs broker confirmation.</tspan></text>
-  <rect x="1032" y="446" width="134" height="30" rx="8" fill="#3f3320" stroke="#d7a94b"/>
-  <text x="1099" y="465" font-size="12" fill="#d7a94b" text-anchor="middle">Open Plan (P)</text>
+  <text x="338" y="452" font-size="12.5"><tspan fill="#d7a94b">◎  Projection, not a book</tspan><tspan fill="#a89468">  — shares and calls that exist only if your put is assigned.</tspan></text>
+  <text x="338" y="474" font-size="12.5" fill="#a89468">Amber panes are hypothetical; steel panes are real. Recording an assignment needs broker confirmation.</text>
+  <rect x="1042" y="446" width="124" height="30" rx="8" fill="#3f3320" stroke="#d7a94b"/>
+  <text x="1104" y="465" font-size="12" fill="#d7a94b" text-anchor="middle">Open Plan (P)</text>
 
   <!-- journal strip -->
   <rect x="320" y="532" width="862" height="128" rx="10" fill="#151a21" stroke="#232b36"/>

@@ -19,7 +19,7 @@ your book but cannot cook its numbers.
 ![Tests](https://img.shields.io/badge/tests-117%20passing-4fc08d)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-<img src="assets/screenshot.svg" alt="The Wheels web desk: sidebar money model, real positions, projection banner, append-only ledger" width="100%">
+<img src="assets/screenshot.png" alt="The Wheels web desk: sidebar money model, real positions with live marks, amber projection banner, append-only ledger" width="100%">
 
 </div>
 
