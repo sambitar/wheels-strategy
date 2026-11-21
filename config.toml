@@ -1,0 +1,26 @@
+# Wheels configuration. Everything here is editable from the in-app
+# Settings screen (","), which writes this file back in place.
+
+[account]
+# Total capital you are willing to have committed to wheel positions.
+budget = 2000
+# Risk profile: conservative | balanced | aggressive
+profile = "balanced"
+
+[scan]
+# Expiration window in calendar days. 30-60 is "one to two months".
+dte_min = 30
+dte_max = 60
+# Liquidity gates. Contracts outside these are excluded, not scored low.
+min_open_interest = 100
+max_spread_pct = 15
+# Assumed risk-free rate for Black-Scholes delta.
+risk_free_rate = 0.04
+# How many ranked candidates to return.
+top_n = 8
+
+[ui]
+refresh_seconds = 0
+
+[watchlist]
+symbols = ["FIG", "SOFI", "F", "SNAP"]

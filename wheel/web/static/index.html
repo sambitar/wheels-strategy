@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wheels</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">◎</span>
+      <span class="brand-name">Wheels</span>
+    </div>
+
+    <nav id="nav">
+      <button class="nav-item active" data-view="book">
+        <span class="nav-key">B</span><span>Book</span>
+      </button>
+      <button class="nav-item" data-view="scan">
+        <span class="nav-key">S</span><span>Scan</span>
+      </button>
+      <button class="nav-item" data-view="calls">
+        <span class="nav-key">C</span><span>Calls</span>
+      </button>
+      <button class="nav-item" data-view="plan">
+        <span class="nav-key">P</span><span>Plan</span>
+      </button>
+      <button class="nav-item" data-view="journal">
+        <span class="nav-key">L</span><span>Ledger</span>
+      </button>
+      <button class="nav-item" data-view="settings">
+        <span class="nav-key">,</span><span>Settings</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="acct">
+        <div class="acct-row">
+          <span class="muted">Budget</span><span id="sb-budget">—</span>
+        </div>
+        <div class="acct-row">
+          <span class="muted" title="cash + collateral + shares at the live price (at cost until quotes load)">Total</span><span id="sb-total">—</span>
+        </div>
+        <div class="acct-row">
+          <span class="muted">Free</span><span id="sb-free">—</span>
+        </div>
+        <div class="acct-row">
+          <span class="muted">Premium</span><span id="sb-prem">—</span>
+        </div>
+        <div class="acct-row">
+          <span class="muted">Realized</span><span id="sb-real">—</span>
+        </div>
+        <div class="meter"><div id="sb-meter"></div></div>
+        <div class="acct-note" id="sb-note"></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="view-title">Book</h1>
+        <p class="sub" id="view-sub"></p>
+      </div>
+      <div class="topbar-actions">
+        <label class="toggle" id="project-toggle" hidden>
+          <input type="checkbox" id="project-checkbox">
+          <span>Project full budget</span>
+        </label>
+        <button class="btn" id="refresh-btn" title="Refetch quotes (R)">Refresh</button>
+      </div>
+    </header>
+
+    <div id="banner" class="banner" hidden></div>
+    <div id="content" class="content"></div>
+  </main>
+</div>
+
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+
+<script src="app.js"></script>
+<script src="views.js"></script>
+<script src="modals.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 720" font-family="Inter, 'Segoe UI', system-ui, -apple-system, sans-serif">
+  <rect width="1240" height="720" fill="#0f1319"/>
+
+  <!-- app frame -->
+  <rect x="30" y="28" width="1180" height="664" rx="14" fill="#151a21" stroke="#232b36"/>
+
+  <!-- sidebar -->
+  <line x1="286" y1="28" x2="286" y2="692" stroke="#232b36"/>
+  <text x="58" y="76" font-size="17" font-weight="700" fill="#d8dee7"><tspan fill="#5aa9e6">◎</tspan>  Wheels</text>
+
+  <!-- nav -->
+  <rect x="46" y="104" width="224" height="34" rx="8" fill="#1a2029"/>
+  <rect x="46" y="104" width="3" height="34" rx="1.5" fill="#5aa9e6"/>
+  <text x="62" y="126" font-size="13.5" fill="#d8dee7" font-weight="600">Book</text>
+  <text x="62" y="166" font-size="13.5" fill="#7c8798">Scan</text>
+  <text x="62" y="206" font-size="13.5" fill="#7c8798">Calls</text>
+  <text x="62" y="246" font-size="13.5" fill="#7c8798">Plan</text>
+  <text x="62" y="286" font-size="13.5" fill="#7c8798">Ledger</text>
+  <text x="62" y="326" font-size="13.5" fill="#7c8798">Settings</text>
+  <g font-size="10" fill="#4a5568">
+    <text x="238" y="126">B</text><text x="238" y="166">S</text><text x="238" y="206">C</text>
+    <text x="238" y="246">P</text><text x="238" y="286">L</text><text x="236" y="326">,</text>
+  </g>
+
+  <!-- money box -->
+  <rect x="46" y="470" width="224" height="200" rx="10" fill="#1a2029" stroke="#232b36"/>
+  <g font-size="12">
+    <text x="62" y="498" fill="#7c8798">Budget</text><text x="254" y="498" fill="#d8dee7" text-anchor="end">$2,000</text>
+    <text x="62" y="522" fill="#7c8798">Total</text><text x="254" y="522" fill="#e06c75" text-anchor="end" font-weight="600">$1,690</text>
+    <text x="62" y="546" fill="#7c8798">Free</text><text x="254" y="546" fill="#4fc08d" text-anchor="end">$50</text>
+    <text x="62" y="570" fill="#7c8798">Premium</text><text x="254" y="570" fill="#d8dee7" text-anchor="end">$63</text>
+    <text x="62" y="594" fill="#7c8798">Realized</text><text x="254" y="594" fill="#4fc08d" text-anchor="end">+$63</text>
+  </g>
+  <rect x="62" y="612" width="192" height="5" rx="2.5" fill="#232b36"/>
+  <rect x="62" y="612" width="187" height="5" rx="2.5" fill="#d7a94b"/>
+  <text x="62" y="638" font-size="9.5" fill="#7c8798">$113 cash · $1,577 in shares · −$373 open</text>
+  <text x="62" y="655" font-size="9.5" fill="#7c8798">marked to live quotes</text>
+
+  <!-- top bar -->
+  <text x="320" y="82" font-size="20" font-weight="700" fill="#d8dee7">Book</text>
+  <text x="320" y="104" font-size="11.5" fill="#7c8798">Open positions and what to do next — engine-computed from the journal</text>
+  <rect x="1088" y="60" width="94" height="30" rx="8" fill="none" stroke="#2e3746"/>
+  <text x="1135" y="79" font-size="12" fill="#7c8798" text-anchor="middle">Refresh (R)</text>
+
+  <!-- real banner -->
+  <rect x="320" y="126" width="862" height="42" rx="9" fill="#1a2029" stroke="#232b36"/>
+  <text x="338" y="152" font-size="12.5"><tspan fill="#5aa9e6">◎</tspan><tspan fill="#7c8798"><tspan fill="#d8dee7" font-weight="600">  What you actually hold.</tspan>  0 calls sold · 0 puts open · 1 share lot · totals priced at today's quotes</tspan></text>
+
+  <!-- stats -->
+  <g font-size="9.5" fill="#7c8798" letter-spacing="1">
+    <text x="340" y="206">TOTAL (LIVE)</text><text x="512" y="206">OPEN P/L</text><text x="676" y="206">CASH</text>
+    <text x="820" y="206">OPEN PUTS</text><text x="976" y="206">PREMIUM BANKED</text><text x="1120" y="206">REALIZED</text>
+  </g>
+  <g font-size="19" font-weight="600">
+    <text x="340" y="238" fill="#e06c75">$1,690</text><text x="512" y="238" fill="#e06c75">−$373</text>
+    <text x="676" y="238" fill="#d8dee7">$113</text><text x="820" y="238" fill="#d8dee7">0</text>
+    <text x="976" y="238" fill="#d8dee7">$63</text><text x="1120" y="238" fill="#4fc08d">+$63</text>
+  </g>
+
+  <!-- positions table -->
+  <rect x="320" y="268" width="862" height="130" rx="10" fill="#151a21" stroke="#232b36"/>
+  <text x="340" y="298" font-size="13" font-weight="600" fill="#d8dee7">Positions</text>
+  <text x="430" y="298" font-size="11" fill="#7c8798">1 open</text>
+  <g font-size="9.5" fill="#7c8798" letter-spacing="1">
+    <text x="340" y="326">POSITION</text><text x="530" y="326">DTE</text><text x="600" y="326">SPOT</text>
+    <text x="680" y="326">MARK</text><text x="770" y="326">P/L</text><text x="880" y="326">NEXT ACTION</text>
+  </g>
+  <line x1="320" y1="338" x2="1182" y2="338" stroke="#232b36"/>
+  <text x="340" y="366" font-size="13" fill="#5aa9e6">FIG 100 shares</text>
+  <text x="537" y="366" font-size="13" fill="#7c8798">—</text>
+  <text x="600" y="366" font-size="13" fill="#d8dee7">15.77</text>
+  <text x="686" y="366" font-size="13" fill="#7c8798">—</text>
+  <text x="770" y="366" font-size="13" fill="#e06c75">−$310</text>
+  <text x="880" y="366" font-size="12.5" fill="#d8dee7">Idle shares — sell a call above $18.87 basis</text>
+
+  <!-- projection strip: Plan teaser -->
+  <rect x="320" y="422" width="862" height="86" rx="10" fill="#231d10" stroke="#3f3320"/>
+  <text x="338" y="452" font-size="12.5"><tspan fill="#d7a94b">◎  Projection, not a book.</tspan><tspan fill="#a89468">  Plan answers “what if this put is assigned?” — shares and calls that do not</tspan></text>
+  <text x="356" y="472" font-size="12.5" fill="#a89468">exist yet. Amber panes are hypothetical; steel panes are real. Recording an assignment from here needs broker confirmation.</tspan></text>
+  <rect x="1032" y="446" width="134" height="30" rx="8" fill="#3f3320" stroke="#d7a94b"/>
+  <text x="1099" y="465" font-size="12" fill="#d7a94b" text-anchor="middle">Open Plan (P)</text>
+
+  <!-- journal strip -->
+  <rect x="320" y="532" width="862" height="128" rx="10" fill="#151a21" stroke="#232b36"/>
+  <text x="340" y="562" font-size="13" font-weight="600" fill="#d8dee7">Ledger</text>
+  <text x="400" y="562" font-size="11" fill="#7c8798">append-only · newest first</text>
+  <g font-size="12" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+    <text x="340" y="592" fill="#7c8798">2026-11-20 13:30</text><text x="530" y="592" fill="#4fc08d">assign</text><text x="640" y="592" fill="#7c8798">FIG-put-19.5-2026-11-20-1-2026-11-18</text>
+    <text x="340" y="618" fill="#7c8798">2026-11-18 11:07</text><text x="530" y="618" fill="#d7a94b">open</text><text x="640" y="618" fill="#7c8798">SELL FIG 2026-11-20 19.5P x1 @ 0.63</text>
+  </g>
+  <text x="340" y="646" font-size="10.5" fill="#4a5568">the file is the truth; positions are derived, never stored — a wrong fill is corrected with an appended fix, not an edit</text>
+</svg>
