@@ -69,7 +69,7 @@ def test_index_is_served(live_server):
 
 
 def test_static_assets_are_served(live_server):
-    for asset in ("style.css", "app.js", "views.js", "modals.js", "favicon.svg"):
+    for asset in ("style.css", "app.js", "views.js", "modals.js", "chat.js", "favicon.svg"):
         with urllib.request.urlopen(f"{live_server}/{asset}", timeout=10) as res:
             assert res.status == 200, asset
 

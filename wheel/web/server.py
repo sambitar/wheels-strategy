@@ -20,6 +20,7 @@ from urllib.parse import parse_qs, urlparse
 
 from .. import engine, ledger
 from ..config import Config
+from . import chat
 
 STATIC = Path(__file__).parent / "static"
 
@@ -199,6 +200,9 @@ def api_sync_apply(body: dict) -> dict:
     return engine.sync_apply(Config.load(), None if body.get("all") else list(ids))
 
 
+CHAT_MESSAGE_LIMIT = 8000
+
+
 GET_ROUTES = {
     "/api/book": lambda q: _book_payload(),
     "/api/status": lambda q: engine.status(Config.load()),
@@ -208,6 +212,7 @@ GET_ROUTES = {
     "/api/journal": lambda q: engine.journal(),
     "/api/settings": lambda q: _settings_payload(),
     "/api/sync": lambda q: engine.sync_preview(Config.load()),
+    "/api/chat/info": lambda q: chat.status(),
 }
 
 POST_ROUTES = {
@@ -267,6 +272,61 @@ class Handler(BaseHTTPRequestHandler):
             raise ValueError("body must be a JSON object")
         return payload
 
+    # -- chat: one prompt, streamed back as server-sent events -------------
+    def _write_frame(self, event: str, payload: dict) -> None:
+        frame = f"event: {event}\ndata: {json.dumps(payload, default=str)}\n\n"
+        self.wfile.write(frame.encode())
+        self.wfile.flush()
+
+    def _chat(self) -> None:
+        """Open one turn. Reached only before any header is written, so the
+        validation errors can still be plain JSON with a 4xx status."""
+        try:
+            body = self._body()
+        except ValueError as exc:
+            self._send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+            return
+        message = str(body.get("message") or "").strip()
+        if not message:
+            self._send_json({"error": "message is required"}, HTTPStatus.BAD_REQUEST)
+            return
+        if len(message) > CHAT_MESSAGE_LIMIT:
+            self._send_json(
+                {"error": f"message is too long (max {CHAT_MESSAGE_LIMIT} characters)"},
+                HTTPStatus.BAD_REQUEST,
+            )
+            return
+        session = body.get("session") or None
+        if session is not None and not chat.valid_session(session):
+            self._send_json({"error": "bad session id"}, HTTPStatus.BAD_REQUEST)
+            return
+
+        self.send_response(200)
+        self.send_header("Content-Type", "text/event-stream; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Connection", "close")
+        self.send_header("X-Accel-Buffering", "no")
+        self.end_headers()
+        self.close_connection = True
+
+        try:
+            events = chat.stream(message, session)
+            try:
+                for event, payload in events:
+                    self._write_frame(event, payload)
+            finally:
+                events.close()  # kills the subprocess if the bubble went away
+        except (BrokenPipeError, ConnectionResetError):
+            # The bubble was collapsed or the page closed; the generator's
+            # finally block kills the subprocess.
+            pass
+        except Exception as exc:  # noqa: BLE001 - headers are gone, only SSE left
+            try:
+                self._write_frame("error", {"message": f"{type(exc).__name__}: {exc}"})
+                self._write_frame("done", {"ok": False})
+            except Exception:  # noqa: BLE001
+                pass
+
     # -- verbs -------------------------------------------------------------
     def do_GET(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)
@@ -293,6 +353,15 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)
+        if parsed.path == "/api/chat":
+            try:
+                self._chat()
+            except Exception as exc:  # noqa: BLE001
+                try:
+                    self._send_json({"error": f"{type(exc).__name__}: {exc}"}, 500)
+                except Exception:  # noqa: BLE001 - headers may already be sent
+                    pass
+            return
         route = POST_ROUTES.get(parsed.path)
         if route is None:
             self._send_json({"error": "not found"}, 404)
@@ -314,7 +383,7 @@ def serve(host: str = "127.0.0.1", port: int = 8765, open_browser: bool = True,
 
     print(f"wheels  →  {url}")
     if host == "0.0.0.0":  # noqa: S104 - explicit opt-in
-        print("         listening on all interfaces — anyone on your network can record trades")
+        print("         listening on all interfaces — anyone on your network can record trades and chat with the agent")
     print("         ctrl-c to stop")
 
     if open_browser:

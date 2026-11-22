@@ -16,7 +16,7 @@ your book but cannot cook its numbers.
 ![Runtime deps](https://img.shields.io/badge/runtime%20deps-3-brightgreen)
 ![Engine](https://img.shields.io/badge/engine-stdlib%20only-5aa9e6)
 ![OpenCode](https://img.shields.io/badge/OpenCode-agent%20%2B%20skill%20included-blueviolet)
-![Tests](https://img.shields.io/badge/tests-117%20passing-4fc08d)
+![Tests](https://img.shields.io/badge/tests-130%20passing-4fc08d)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 <img src="assets/screenshot.png" alt="The Wheels web desk: sidebar money model, real positions with live marks, amber projection banner, append-only ledger" width="100%">
@@ -206,14 +206,15 @@ First run: open **Settings**, set your `budget` and watchlist, then **Scan**.
 ## The OpenCode connection
 
 This repo ships a complete local-AI setup under `.opencode/` — open the project with
-[OpenCode](https://opencode.ai) and a strategy analyst agent exists, with your journal
-as its context. Nothing talks to anyone else: the agent reads the same engine the UI
-does, and every number it quotes came from code, not from the model's head.
+[OpenCode](https://opencode.ai) and two strategy agents exist, with your journal as
+context. Nothing talks to anyone else: the agents read the same engine the UI does,
+and every number they quote came from code, not from the model's head.
 
 ```
 .opencode/
 ├── opencode.json                     project config: allow `uv run wheel*` in the shell
-├── agents/wheels.md                  the subagent: persona, model, hard permissions
+├── agents/wheels.md                  the analyst subagent: full recommendations
+├── agents/wheels-chat.md             the conversational agent behind the chat bubble
 └── skills/wheel-strategy/
     ├── SKILL.md                      the workflow the agent loads on demand
     └── references/scoring.md         gates, weights, delta bands, action rules
@@ -251,6 +252,40 @@ needs per-proposal confirmation*.
 assign / called_away / roll / fix`), and you either use the web desk (every write has a
 confirmation dialog) or tell the agent to do it out loud.
 
+## The chat bubble
+
+The web desk has a chat bubble in the bottom-right corner. It is not a chatbot bolted
+on: it talks to a second bundled agent,
+[`agents/wheels-chat.md`](.opencode/agents/wheels-chat.md), which shares the analyst's
+permission boundary and its one hard rule — every number comes from
+`uv run wheel --json …`, never from the model's head.
+
+Ask it *"why is my free cash only $50?"*, *"is my covered call covered?"* or *"what
+should I sell today?"* and it answers in a few conversational lines, using your own
+book as the example. One turn is one `opencode run --agent wheels-chat` process; the
+reply streams into the bubble as it is written, and the session id plus the transcript
+stay in your browser (`localStorage`), so collapsing the panel loses nothing. **＋**
+starts a fresh thread.
+
+It is read-only: no edits, no trade recording, and no shell except the engine. Your
+move is still made in the UI.
+
+Requirements:
+
+- an `opencode` CLI on `PATH`, or `WHEELS_OPENCODE_BIN=/path/to/opencode`;
+- the `.opencode/agents/wheels-chat.md` file from this repo — the server runs the
+  agent from the project directory even if you launched the desk elsewhere.
+
+```sh
+WHEELS_OPENCODE_BIN=/path/to/opencode wheel --web
+```
+
+`GET /api/chat/info` reports what was found (`available`, `binary`, `agent_file`); the
+bubble shows that hint when something is missing. A downloaded single-file `opencode`
+that macOS still quarantines dies with `killed: 9` — clear it once with
+`xattr -d com.apple.quarantine <path>`. Each turn costs model tokens; nothing else
+leaves your machine.
+
 ## Interface
 
 The engine has three front doors and they return identical numbers.
@@ -269,10 +304,11 @@ The engine has three front doors and they return identical numbers.
 | `GET /api/{book,status,scan,calls,plan,journal,settings,sync}` | reads |
 | `POST /api/trades/{open,close,expire,assign,called-away,fix}` | writes |
 | `POST /api/{settings,sync}` | config, confirmed sync |
+| `GET /api/chat/info` · `POST /api/chat` | the bubble's agent availability / streamed reply (SSE) |
 
 The desk server binds `127.0.0.1` by default. `--host 0.0.0.0` is opt-in and prints a
 warning, because **the web UI has no authentication** — anyone who can reach the port
-can record trades.
+can record trades, and can chat with an agent that can read this project.
 
 Keyboard: the same single keys everywhere — <kbd>B</kbd> Book · <kbd>S</kbd> Scan ·
 <kbd>C</kbd> Calls · <kbd>P</kbd> Plan · <kbd>L</kbd> Ledger · <kbd>,</kbd> Settings ·
@@ -307,9 +343,10 @@ wheel/
 ├── app.py + ui/  Textual TUI (screens, modals, theme)
 └── web/          stdlib http.server + hand-written frontend
     ├── server.py routes, validation, id-or-label resolution
-    └── static/   index.html, app.js, views.js, modals.js, style.css
-tests/            117 tests: bsm, scoring, journal replay & fixes, web transport, TUI flows
-.opencode/        the agent, the skill, the permission boundary
+    ├── chat.py   streams the wheels-chat agent into the bubble (SSE)
+    └── static/   index.html, app.js, views.js, modals.js, chat.js, style.css
+tests/            130 tests: bsm, scoring, journal replay & fixes, web + chat transport, TUI flows
+.opencode/        the two agents, the skill, the permission boundary
 ```
 
 There is exactly one implementation of every number. The TUI, the web desk and the
@@ -321,9 +358,11 @@ claim instead of a vibe.
 - **Your trades stay on disk, yours.** `state/` is gitignored; nothing is uploaded.
   Market data is fetched from Yahoo endpoints via `yfinance` — treat it as *delayed
   and unofficial*, and verify every ticket at your broker.
-- **The model sees only what you let it.** The bundled agent's shell is confined to
-  `wheel --json` output; its provider/endpoint is whatever OpenCode is configured
-  with — local models keep that promise, hosted ones carry the usual caveats.
+- **The model sees only what you let it.** Both agents' shells are confined to
+  `wheel --json` output and their edits are denied; the chat bubble sends your
+  questions and the engine output the agent asks for to whatever provider OpenCode is
+  configured with — local models keep that promise, hosted ones carry the usual
+  caveats.
 - **No authentication on the desk.** Loopback-only by default for exactly this reason.
 - **Nothing here is financial advice.** Options selling carries unlimited downside on
   naked legs; the wheel's "safety" assumes you can survive assignment. This software
@@ -340,17 +379,19 @@ claim instead of a vibe.
 | No dividend modelling | assignment economics ignore accrued dividends |
 | Some tests hit the network | quote-dependent tests skip nothing; they tolerate failure but expect speed |
 | No mobile story | it's a terminal and a web page |
+| Chat needs the CLI | the bubble runs `opencode run`; without the binary it explains what is missing instead of answering |
 
 ## Tests
 
 ```sh
-uv run pytest -q      # 117 passing
+uv run pytest -q      # 130 passing
 ```
 
 The suite is mostly about the things that silently ruin a tracker: the full-wheel cash
 identity (open → assign → cover → called away must return every dollar to the right
 bucket), fixes recomputing the whole book, replay refusing to double-count premium,
-label-vs-id resolution, and real keypresses driving the TUI.
+label-vs-id resolution, and real keypresses driving the TUI. The chat transport is
+tested against a stand-in `opencode` binary, so no model or network is involved.
 
 ## Troubleshooting
 
@@ -369,6 +410,12 @@ means a typo'd id.
 
 **The agent won't write to the journal.** By design: writes need you. Ask it to show
 the exact `uv run wheel --json …` command and run it, or use the desk.
+
+**The chat bubble says the agent is unavailable.** `GET /api/chat/info` names what is
+missing. Usually the `opencode` binary is not on `PATH` (set
+`WHEELS_OPENCODE_BIN=/path/to/opencode`), or the app is not running from this
+checkout, so `.opencode/agents/wheels-chat.md` is absent. A downloaded binary that
+macOS quarantines exits 137 — clear it with `xattr -d com.apple.quarantine`.
 
 ## Roadmap
 
